@@ -1,0 +1,411 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>[hidden]{display:none!important} body{margin:0} img{max-width:100%}</style>
+<title>Translation Strategies Exercise</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&display=swap">
+<style>
+/* Layout: one reading column; four numbered tasks follow the 25-minute group-work sequence; teal ink + coral accent echo the lecture slides */
+:root {
+  --bg: #ffffff;
+  --surface: #eef4f5;
+  --surface-2: #fbede3;
+  --ink: #1e2b30;
+  --muted: #5f7a82;
+  --teal: #0f4c5c;
+  --coral: #d2560f;
+  --line: #cfdde0;
+  --ok: #1d7a4a;
+  --ok-bg: #e3f3ea;
+  --bad: #b3261e;
+  --bad-bg: #fbe6e4;
+  --on-teal: #ffffff;
+  --display: "Source Serif 4", Cambria, Georgia, serif;
+  --body: "Source Sans 3", Calibri, "Segoe UI", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0f1a1e; --surface: #18292f; --surface-2: #2c211b; --ink: #e6eef0; --muted: #94adb4;
+  --teal: #7cc3d1; --coral: #f08a4b; --line: #2a3f46; --ok: #6fd39b; --ok-bg: #163126;
+  --bad: #ff8f86; --bad-bg: #3a1c1a; --on-teal: #0f1a1e; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #0f1a1e; --surface: #18292f; --surface-2: #2c211b; --ink: #e6eef0; --muted: #94adb4;
+  --teal: #7cc3d1; --coral: #f08a4b; --line: #2a3f46; --ok: #6fd39b; --ok-bg: #163126;
+  --bad: #ff8f86; --bad-bg: #3a1c1a; --on-teal: #0f1a1e; color-scheme: dark }
+
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font: 17px/1.55 var(--body); }
+.wrap { grid-template-columns: minmax(0, 1fr); max-width: 860px; margin: 0 auto; padding-block: 40px 80px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: grid; gap: 48px; }
+h1, h2 { font-family: var(--display); color: var(--teal); text-wrap: balance; margin: 0; line-height: 1.15; }
+h1 { font-size: clamp(2rem, 5vw, 2.8rem); }
+h2 { font-size: 1.6rem; }
+p { margin: 0; }
+.eyebrow { font-size: .78rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--coral); }
+.lead { color: var(--muted); max-width: 62ch; }
+header { display: grid; gap: 14px; }
+.pair { font-weight: 700; letter-spacing: .14em; font-size: .78rem; color: var(--muted); }
+.pair b { color: var(--coral); margin: 0 .5em; }
+
+/* plan */
+.plan { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.step { background: var(--surface); border-radius: 12px; padding: 14px; display: grid; gap: 6px; align-content: start; }
+.step .n { font-family: var(--display); font-weight: 700; color: var(--coral); font-size: 1.3rem; }
+.step .t { font-size: .92rem; }
+.step a { color: var(--teal); font-weight: 600; font-size: .9rem; }
+@media (max-width: 640px) { .plan { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+/* timer */
+.timer { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+.clock { font: 700 1.6rem/1 var(--display); font-variant-numeric: tabular-nums; color: var(--teal); min-width: 4ch; }
+.clock.done { color: var(--coral); }
+
+section.task { display: grid; gap: 18px; }
+.task-head { display: grid; gap: 6px; }
+.task-head .meta { color: var(--muted); font-size: .95rem; }
+
+button { font: 600 .95rem var(--body); border-radius: 999px; padding: 9px 18px; cursor: pointer; border: 1.5px solid var(--teal); background: transparent; color: var(--teal); }
+button.primary { background: var(--teal); color: var(--on-teal); }
+button:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--coral); outline-offset: 2px; }
+.actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.score { font-weight: 700; color: var(--teal); }
+
+textarea, input[type=text], select { font: inherit; color: var(--ink); background: var(--bg); border: 1.5px solid var(--line); border-radius: 8px; }
+textarea { width: 100%; min-height: 110px; padding: 10px 12px; resize: vertical; }
+
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { background: var(--surface); border-radius: 999px; padding: 6px 14px; font-weight: 600; color: var(--teal); font-size: .95rem; }
+
+/* matching + gaps */
+.items { display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; counter-reset: def; }
+.item { border: 1.5px solid var(--line); border-radius: 12px; padding: 16px 18px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; min-width: 0; }
+.item.ok { border-color: var(--ok); background: var(--ok-bg); }
+.item.bad { border-color: var(--bad); background: var(--bad-bg); }
+.item .def { font-size: 1rem; }
+.item .def::before { counter-increment: def; content: counter(def, upper-alpha) ".  "; font-weight: 700; color: var(--coral); }
+.item select { padding: 8px 10px; width: 100%; min-width: 0; }
+.items, .quiz { min-width: 0; }
+.item > * { min-width: 0; }
+.item .name { font-family: var(--display); font-weight: 700; color: var(--teal); font-size: 1.1rem; }
+.gap { display: inline-block; width: 11ch; max-width: 100%; padding: 2px 6px; margin: 2px 0; border-width: 0 0 2px; border-radius: 4px 4px 0 0; background: var(--surface); }
+.gap.ok { border-color: var(--ok); background: var(--ok-bg); }
+.gap.bad { border-color: var(--bad); background: var(--bad-bg); }
+.blank { letter-spacing: .1em; color: var(--muted); }
+.item ul { margin: 6px 0 0; padding-left: 1.2em; display: grid; gap: 6px; }
+.fb { font-size: .9rem; font-weight: 600; }
+.fb.ok { color: var(--ok); } .fb.bad { color: var(--bad); }
+em.term { font-style: italic; }
+
+/* examples quiz */
+.quiz { display: grid; gap: 10px; }
+.q { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; align-items: center; padding: 12px 14px; border-radius: 10px; background: var(--surface); }
+.q.ok { background: var(--ok-bg); } .q.bad { background: var(--bad-bg); }
+.q .ex { min-width: 0; }
+.lang { font-size: .72rem; font-weight: 700; color: var(--coral); margin-right: 4px; letter-spacing: .05em; }
+.arrow { color: var(--coral); font-weight: 700; margin: 0 6px; }
+.q .src { font-style: italic; } .q .tgt { font-style: italic; font-weight: 700; color: var(--teal); }
+.q select { width: 100%; padding: 8px 10px; }
+.q .fb { grid-column: 1 / -1; }
+@media (max-width: 560px) { .q { grid-template-columns: minmax(0, 1fr); } }
+
+/* own examples */
+.own { display: grid; gap: 10px; }
+.own-row { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr) minmax(0, 1fr); gap: 10px; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--line); }
+.own-row .name { font-weight: 600; color: var(--teal); font-size: .95rem; }
+.own-row input { width: 100%; padding: 8px 10px; }
+.own-head { font-size: .78rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); border-bottom: 1.5px solid var(--line); }
+@media (max-width: 600px) { .own-row { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } .own-row .name { grid-column: 1 / -1; } .own-head { display: none; } }
+.note { font-size: .9rem; color: var(--muted); }
+@media (prefers-reduced-motion: no-preference) { .item, .q, .gap { transition: background-color .2s, border-color .2s; } }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <div class="pair">SOURCE<b>→</b>TARGET</div>
+    <h1>Translation strategies: group exercises</h1>
+    <p class="lead">Local translation strategies (procedures) for informative text types. Work in groups of three. The whole exercise takes about 25 minutes.</p>
+  </header>
+
+  <section class="task" aria-labelledby="plan-h">
+    <div class="task-head"><span class="eyebrow">Plan · 25 min</span><h2 id="plan-h">Four steps, five minutes each</h2></div>
+    <div class="plan">
+      <div class="step"><span class="n">1</span><span class="t">Brainstorm: what types of strategies or procedures do you know?</span><a href="#task1">Go to task</a></div>
+      <div class="step"><span class="n">2</span><span class="t">Figure out what each named strategy involves.</span><a href="#task2">Go to task</a></div>
+      <div class="step"><span class="n">3</span><span class="t">Assign the definitions to the right names.</span><a href="#task3">Go to task</a></div>
+      <div class="step"><span class="n">4</span><span class="t">Prepare examples.</span><a href="#task4">Go to task</a></div>
+    </div>
+    <div class="timer" aria-live="polite">
+      <span class="clock" id="clock">5:00</span>
+      <button class="primary" id="tStart" type="button">Start 5 minutes</button>
+      <button id="tReset" type="button">Reset</button>
+    </div>
+  </section>
+
+  <section class="task" id="task1" aria-labelledby="t1h">
+    <div class="task-head"><span class="eyebrow">Step 1 · 5 min</span><h2 id="t1h">Brainstorm</h2>
+      <p class="meta">What types of translation strategies or procedures do you know? Note down everything your group comes up with.</p></div>
+    <textarea id="brainstorm" placeholder="e.g. borrowing, literal translation, …" aria-label="Your group's brainstorm"></textarea>
+  </section>
+
+  <section class="task" id="task2" aria-labelledby="t2h">
+    <div class="task-head"><span class="eyebrow">Step 2 · 5 min</span><h2 id="t2h">What does each strategy involve?</h2>
+      <p class="meta">Here are the names of nine strategies. In your group, discuss what each one might involve before you look at any definitions.</p></div>
+    <div class="chips" id="names"></div>
+  </section>
+
+  <section class="task" id="task3" aria-labelledby="t3h">
+    <div class="task-head"><span class="eyebrow">Step 3 · 5 min</span><h2 id="t3h">Match definitions to names</h2>
+      <p class="meta">Part A: choose the strategy each definition describes. Part B: fill in the gaps with the missing terms.</p></div>
+
+    <h3 class="eyebrow" style="margin:0">Part A · Matching</h3>
+    <div class="items" id="matchList"></div>
+    <div class="actions">
+      <button class="primary" id="mCheck" type="button">Check answers</button>
+      <button id="mShow" type="button">Show answers</button>
+      <button id="mReset" type="button">Start again</button>
+      <span class="score" id="mScore" aria-live="polite"></span>
+    </div>
+
+    <h3 class="eyebrow" style="margin:16px 0 0">Part B · Fill in the gaps</h3>
+    <div class="items" id="gapList" style="counter-reset: def"></div>
+    <div class="actions">
+      <button class="primary" id="gCheck" type="button">Check answers</button>
+      <button id="gShow" type="button">Show answers</button>
+      <button id="gReset" type="button">Start again</button>
+      <span class="score" id="gScore" aria-live="polite"></span>
+    </div>
+  </section>
+
+  <section class="task" id="task4" aria-labelledby="t4h">
+    <div class="task-head"><span class="eyebrow">Step 4 · 5 min</span><h2 id="t4h">Examples</h2>
+      <p class="meta">Part A: which strategy does each example show? Part B: prepare your own examples for each strategy.</p></div>
+
+    <h3 class="eyebrow" style="margin:0">Part A · Which strategy?</h3>
+    <div class="quiz" id="quiz"></div>
+    <div class="actions">
+      <button class="primary" id="qCheck" type="button">Check answers</button>
+      <button id="qShow" type="button">Show answers</button>
+      <button id="qReset" type="button">Start again</button>
+      <span class="score" id="qScore" aria-live="polite"></span>
+    </div>
+
+    <h3 class="eyebrow" style="margin:16px 0 0">Part B · Your own examples</h3>
+    <div class="own" id="own">
+      <div class="own-row own-head"><span>Strategy</span><span>Source text</span><span>Translation</span></div>
+    </div>
+    <div class="actions">
+      <button class="primary" id="copyOwn" type="button">Copy our examples</button>
+      <span class="note" id="copyMsg" aria-live="polite">Paste them into the group chat or a shared document to compare with other groups.</span>
+    </div>
+    <textarea id="copyFallback" hidden aria-label="Your examples as text" readonly></textarea>
+  </section>
+</div>
+
+<script>
+const NAMES = [
+  "Generalisation and particularisation",
+  "Dilution and concentration",
+  "Translation by paraphrase using a related and unrelated word",
+  "Translation by omission",
+  "Notes, additions or glosses",
+  "Translation using a loan word or a loan word plus explanation",
+  "Calque",
+  "Creation of neologisms by affixation",
+  "Semantic extension"
+];
+
+/* Definitions from the handout. {n} marks a gap; GAPS[n] lists accepted answers (first = model answer); group gaps accept any order. */
+const DEFS = [
+  { name: 0, html: 'Translating a non-equivalent term translators may resort to {0} i.e. a strategy in which “a specific (or concrete) term is translated by a more general (or abstract) term” (Darbelnet -Vinay 1958/1995: 348, as cited by Kwieciński 2001: 127) e.g. <em class="term">strategy</em> translated as <em class="term">polityka</em>. A completely opposite effect would be created by means of {1}, which involves translation of a general term is by a more specific term.' },
+  { name: 1, html: '{2} refer to the form of expression, in which the meaning is rendered. {3} involves “spreading one meaning over several lexical items”, whereas {4} requires an opposite action i.e. “replacing the meaning expressed by a smaller number [of words] or even by one alone” (Darbelnet -Vinay 1958/1995: 341 as cited by Kwieciński 2001: 126).' },
+  { name: 2, html: 'Translators may resort to {5} the term with a related word especially in the cases in which “the source item is lexicalised in the target language but in a different form, and when the frequency with which a certain form is used in the source text is significantly higher than would be natural in the target language” (Baker 1992: 37). In the case that the concept is not lexicalised in the target language at all, an unrelated word may be used instead.' },
+  { name: 3, html: 'Baker (1992: 40) claims that in some contexts {6} of a particular source term may do no harm, if its meaning is not crucial to the development of the text and if it is not worth distracting the reader to follow glosses, notes etc. Such a strategy must, however, be applied with extreme caution.' },
+  { name: 4, html: 'In the cases, in which translator’s intervention is necessary, it is possible to resort to a {7}, {8} or {9} which will enable the target text reader to contextualise both the term and the concept. Newmark (1988: 92) distinguishes the following types of translator’s interventions:<ul><li>{10} inserted directly into the text, with or without a visible distinction between the original text and translator’s contribution, or notes outside the text. Glosses may be also distinguished from the text, and identified as translator’s interventions by means of e.g. square brackets.</li><li>{11} to the original text, with no visible distinction from the original, may be introduced by means of “a relative clause, as a noun in apposition, as a participial phrase, or as a noun phrase in round brackets” (Newmark 1988: 92).</li><li>{12} outside the text are placed at the bottom of the text in a form of a glossary.</li></ul>' },
+  { name: 5, html: 'The original term, which lacks an equivalent, may be directly introduced to the body of the target text as a {13}. Baker (1992: 34) suggests that on its first occurrence in the translated text, the {14} should be followed by an explanation, which facilitates the readers’ comprehension and is especially useful, if a given term keeps recurring in the text.' },
+  { name: 6, html: 'According to Vinay and Darbelnet (2000: 85), a calque may be defined as s a kind of borrowing, in which an expression is not only borrowed from another language but also each of its elements is translated literally. Thus already existing words are used to render only the foreign sense.' },
+  { name: 7, html: 'while encountering a term with no equivalents in the target language the translator can create {15} or rather a new form of a word already existent in the target language by means of affixation' },
+  { name: 8, html: '{16} is a strategy involving a situation, whereby an old word receives a new meaning, which may, but does not necessarily have to, be related to the old one, Kwieciński (2001: 162)' }
+];
+const GAPS = [
+  ["generalisation", "generalization"],
+  ["particularisation", "particularization"],
+  ["Dilution and concentration"],
+  ["Dilution"],
+  ["concentration"],
+  ["paraphrasing", "paraphrase"],
+  ["omission"],
+  ["note", "notes"], ["addition", "additions"], ["gloss", "glosses"],
+  ["Glosses", "gloss"], ["Additions", "addition"], ["Notes", "note"],
+  ["loan word", "loanword", "borrowing", "loan-word"],
+  ["loan word", "loanword", "borrowing", "loan-word"],
+  ["a neologism", "neologism", "neologisms"],
+  ["Semantic extension"]
+];
+const GROUPS = [[7, 8, 9]]; // a note, an addition or a gloss: any order
+
+const EXAMPLES = [
+  { sl: "EN", src: "strategy", tl: "PL", tgt: "polityka", a: 0 },
+  { sl: "EN", src: "give a speech", tl: "PL", tgt: "przemawiać", a: 1 },
+  { sl: "EN", src: "binge-watch", tl: "PL", tgt: "oglądać serial odcinek za odcinkiem", a: 2 },
+  { sl: "EN", src: "Harvard, an Ivy League university", tl: "PL", tgt: "Uniwersytet Harvarda", a: 3 },
+  { sl: "PL", src: "Sejm", tl: "EN", tgt: "the Sejm [lower house of the Polish parliament]", a: 4 },
+  { sl: "EN", src: "lockdown", tl: "PL", tgt: "lockdown (zamknięcie gospodarki)", a: 5 },
+  { sl: "DE", src: "Weltanschauung", tl: "PL", tgt: "światopogląd", a: 6 },
+  { sl: "EN", src: "subsidiarity", tl: "PL", tgt: "pomocniczość", a: 7 },
+  { sl: "EN", src: "mouse (computer device)", tl: "PL", tgt: "mysz", a: 8 },
+  { sl: "EN", src: "outsource", tl: "PL", tgt: "zlecać na zewnątrz", a: 1 },
+  { sl: "EN", src: "skyscraper", tl: "PL", tgt: "drapacz chmur", a: 6 },
+  { sl: "DE", src: "Rathaus", tl: "PL", tgt: "ratusz", a: 5 }
+];
+
+const $ = (id) => document.getElementById(id);
+const store = {
+  get(k) { try { return JSON.parse(localStorage.getItem("ts-ex:" + k)); } catch (e) { return null; } },
+  set(k, v) { try { localStorage.setItem("ts-ex:" + k, JSON.stringify(v)); } catch (e) {} }
+};
+const norm = (s) => (s || "").toLowerCase().replace(/[-‐–]/g, " ").replace(/[^\p{L}\s]/gu, "").replace(/\s+/g, " ").trim().replace(/^(a|an|the) /, "");
+const shuffle = (arr) => arr.map(v => [Math.random(), v]).sort((a, b) => a[0] - b[0]).map(x => x[1]);
+
+/* step 2 */
+shuffle(NAMES.slice()).forEach(n => { const c = document.createElement("span"); c.className = "chip"; c.textContent = n; $("names").appendChild(c); });
+
+/* step 3A matching */
+const order = shuffle(DEFS.map((_, i) => i));
+const options = '<option value="">Choose a strategy…</option>' + NAMES.map((n, i) => `<option value="${i}">${n}</option>`).join("");
+order.forEach((di, k) => {
+  const d = DEFS[di];
+  const el = document.createElement("div");
+  el.className = "item"; el.dataset.answer = d.name;
+  el.innerHTML = `<div class="def">${d.html.replace(/\{\d+\}/g, '<span class="blank">_______</span>')}</div>
+    <select id="m-${di}" aria-label="Strategy for definition ${String.fromCharCode(65 + k)}">${options}</select><span class="fb" aria-live="polite"></span>`;
+  $("matchList").appendChild(el);
+});
+function checkMatch(show) {
+  let ok = 0;
+  document.querySelectorAll("#matchList .item").forEach(el => {
+    const sel = el.querySelector("select"), fb = el.querySelector(".fb");
+    if (show) sel.value = el.dataset.answer;
+    const right = sel.value === el.dataset.answer;
+    el.classList.toggle("ok", right); el.classList.toggle("bad", !right);
+    fb.className = "fb " + (right ? "ok" : "bad");
+    fb.textContent = right ? "Correct" : (sel.value === "" ? "No answer yet" : "Not this one. Try again.");
+    if (right) ok++;
+  });
+  $("mScore").textContent = `${ok} / ${DEFS.length} correct`;
+}
+$("mCheck").onclick = () => checkMatch(false);
+$("mShow").onclick = () => checkMatch(true);
+$("mReset").onclick = () => { document.querySelectorAll("#matchList .item").forEach(el => { el.classList.remove("ok", "bad"); el.querySelector("select").value = ""; el.querySelector(".fb").textContent = ""; }); $("mScore").textContent = ""; };
+
+/* step 3B gaps */
+DEFS.forEach(d => {
+  const el = document.createElement("div");
+  el.className = "item";
+  el.innerHTML = `<div class="name">${NAMES[d.name]}</div><div class="def">${d.html.replace(/\{(\d+)\}/g, (_, n) => `<input type="text" class="gap" id="g-${n}" data-gap="${n}" autocomplete="off" spellcheck="false" aria-label="Gap ${+n + 1}">`)}</div>`;
+  if (!/\{\d+\}/.test(d.html)) el.querySelector(".def").insertAdjacentHTML("beforeend", ' <span class="note">(no gaps in this one)</span>');
+  $("gapList").appendChild(el);
+});
+function checkGaps(show) {
+  let ok = 0;
+  const inputs = [...document.querySelectorAll("#gapList .gap")];
+  if (show) inputs.forEach(i => i.value = GAPS[i.dataset.gap][0]);
+  const grouped = new Set(GROUPS.flat());
+  inputs.forEach(i => {
+    const n = +i.dataset.gap; let right;
+    if (grouped.has(n)) {
+      const g = GROUPS.find(g => g.includes(n));
+      const accepted = g.map(x => GAPS[x].map(norm));
+      const v = norm(i.value);
+      const idx = accepted.findIndex(a => a.includes(v));
+      const earlier = g.slice(0, g.indexOf(n)).map(x => accepted.findIndex(a => a.includes(norm($("g-" + x).value))));
+      right = v !== "" && idx >= 0 && !earlier.includes(idx);
+    } else right = GAPS[n].map(norm).includes(norm(i.value));
+    i.classList.toggle("ok", right); i.classList.toggle("bad", !right);
+    if (right) ok++;
+  });
+  $("gScore").textContent = `${ok} / ${inputs.length} gaps correct`;
+  store.set("gaps", inputs.map(i => i.value));
+}
+$("gCheck").onclick = () => checkGaps(false);
+$("gShow").onclick = () => checkGaps(true);
+$("gReset").onclick = () => { document.querySelectorAll("#gapList .gap").forEach(i => { i.value = ""; i.classList.remove("ok", "bad"); }); $("gScore").textContent = ""; store.set("gaps", null); };
+document.querySelectorAll("#gapList .gap").forEach(i => i.addEventListener("input", () => { i.classList.remove("ok", "bad"); store.set("gaps", [...document.querySelectorAll("#gapList .gap")].map(x => x.value)); }));
+const savedGaps = store.get("gaps");
+if (Array.isArray(savedGaps)) document.querySelectorAll("#gapList .gap").forEach((i, k) => i.value = savedGaps[k] || "");
+
+/* step 4A quiz */
+EXAMPLES.forEach((e, k) => {
+  const el = document.createElement("div");
+  el.className = "q"; el.dataset.answer = e.a;
+  el.innerHTML = `<div class="ex"><span class="lang">${e.sl}</span><span class="src">${e.src}</span><span class="arrow">→</span><span class="lang">${e.tl}</span><span class="tgt">${e.tgt}</span></div>
+    <select id="q-${k}" aria-label="Strategy used in example ${k + 1}">${options}</select><span class="fb" aria-live="polite"></span>`;
+  $("quiz").appendChild(el);
+});
+function checkQuiz(show) {
+  let ok = 0;
+  document.querySelectorAll("#quiz .q").forEach(el => {
+    const sel = el.querySelector("select"), fb = el.querySelector(".fb");
+    if (show) sel.value = el.dataset.answer;
+    const right = sel.value === el.dataset.answer;
+    el.classList.toggle("ok", right); el.classList.toggle("bad", !right);
+    fb.className = "fb " + (right ? "ok" : "bad");
+    fb.textContent = right ? "Correct" : (sel.value === "" ? "No answer yet" : "Not quite. Look at what happens to the form or meaning.");
+    if (right) ok++;
+  });
+  $("qScore").textContent = `${ok} / ${EXAMPLES.length} correct`;
+}
+$("qCheck").onclick = () => checkQuiz(false);
+$("qShow").onclick = () => checkQuiz(true);
+$("qReset").onclick = () => { document.querySelectorAll("#quiz .q").forEach(el => { el.classList.remove("ok", "bad"); el.querySelector("select").value = ""; el.querySelector(".fb").textContent = ""; }); $("qScore").textContent = ""; };
+
+/* step 4B own examples */
+const ownSaved = store.get("own") || {};
+NAMES.forEach((n, i) => {
+  const row = document.createElement("div");
+  row.className = "own-row";
+  row.innerHTML = `<span class="name">${n}</span>
+    <input type="text" id="os-${i}" placeholder="source" aria-label="${n}: source text">
+    <input type="text" id="ot-${i}" placeholder="translation" aria-label="${n}: translation">`;
+  $("own").appendChild(row);
+  row.querySelector("#os-" + i).value = (ownSaved[i] || {}).s || "";
+  row.querySelector("#ot-" + i).value = (ownSaved[i] || {}).t || "";
+});
+$("own").addEventListener("input", () => {
+  const o = {}; NAMES.forEach((_, i) => o[i] = { s: $("os-" + i).value, t: $("ot-" + i).value }); store.set("own", o);
+});
+$("copyOwn").onclick = () => {
+  const txt = NAMES.map((n, i) => {
+    const s = $("os-" + i).value.trim(), t = $("ot-" + i).value.trim();
+    return s || t ? `${n}: ${s} → ${t}` : null;
+  }).filter(Boolean).join("\n");
+  if (!txt) { $("copyMsg").textContent = "Add at least one example first."; return; }
+  const fallback = () => { const ta = $("copyFallback"); ta.hidden = false; ta.value = txt; ta.focus(); ta.select(); $("copyMsg").textContent = "Copying didn't work here. Your examples are selected below, so copy them with Ctrl+C (⌘C on a Mac)."; };
+  try {
+    navigator.clipboard.writeText(txt).then(() => { $("copyMsg").textContent = "Copied. Paste them into the group chat or a shared document."; }, fallback);
+  } catch (e) { fallback(); }
+};
+
+/* brainstorm draft */
+$("brainstorm").value = store.get("brainstorm") || "";
+$("brainstorm").addEventListener("input", e => store.set("brainstorm", e.target.value));
+
+/* 5-minute timer */
+let left = 300, tick = null;
+const show = () => { $("clock").textContent = `${Math.floor(left / 60)}:${String(left % 60).padStart(2, "0")}`; $("clock").classList.toggle("done", left === 0); };
+$("tStart").onclick = () => {
+  if (tick) { clearInterval(tick); tick = null; $("tStart").textContent = "Resume"; return; }
+  if (left === 0) left = 300;
+  $("tStart").textContent = "Pause";
+  tick = setInterval(() => { left = Math.max(0, left - 1); show(); if (left === 0) { clearInterval(tick); tick = null; $("tStart").textContent = "Start 5 minutes"; $("clock").textContent = "Time's up"; } }, 1000);
+};
+$("tReset").onclick = () => { clearInterval(tick); tick = null; left = 300; $("tStart").textContent = "Start 5 minutes"; show(); };
+</script>
+
+</body>
+</html>
